@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Combustible y Movilidad</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; }
+        .container { max-width: 600px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin: auto; }
+        h2 { text-align: center; color: #333; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; color: #555; }
+        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { background-color: #d9534f; color: white; border: none; padding: 12px; width: 100%; font-size: 16px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        button:hover { background-color: #c9302c; }
+        .loading { display: none; text-align: center; margin-top: 10px; color: #0275d8; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Control de Combustible y Movil</h2>
+    <form id="fuelForm">
+        <div class="form-group">
+            <label>Móvil:</label>
+            <input type="text" id="movil" required placeholder="Ej: AB33">
+        </div>
+        <div class="form-group">
+            <label>C.I.:</label>
+            <input type="text" id="ci" required placeholder="Nro de Cédula">
+        </div>
+        <div class="form-group">
+            <label>Nombre y Apellido:</label>
+            <input type="text" id="nombre" required placeholder="Nombre completo">
+        </div>
+        <div class="form-group">
+            <label>Lugar de Salida:</label>
+            <input type="text" id="salida" required>
+        </div>
+        <div class="form-group">
+            <label>Lugar de Destino:</label>
+            <input type="text" id="destino" required>
+        </div>
+        <div class="form-group">
+            <label>Km de Llegada:</label>
+            <input type="number" id="kmLlegada">
+        </div>
+        <div class="form-group">
+            <label>Km Recorrido:</label>
+            <input type="number" id="kmRecorrido">
+        </div>
+        <div class="form-group">
+            <label>Motivo de Viaje:</label>
+            <textarea id="motivo" rows="2"></textarea>
+        </div>
+        <div class="form-group">
+            <label>Litros Cargados:</label>
+            <input type="number" step="0.01" id="litros">
+        </div>
+        <div class="form-group">
+            <label>Factura N°:</label>
+            <input type="text" id="factura">
+        </div>
+        <div class="form-group">
+            <label>Importe Total:</label>
+            <input type="number" id="importe">
+        </div>
+        <button type="submit" id="submitBtn">Guardar Registro</button>
+        <div class="loading" id="loadingMsg">Enviando y guardando en Drive...</div>
+    </form>
+</div>
+
+<script>
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbwIs0ZyBG3DBS1YFVycjtJ2GlYev8Ra-8KoWcH5O9JHdam83MKmJDHETEoY2ptem3bUqw/exec';
+
+    const form = document.getElementById('fuelForm');
+    form.addEventListener('submit', e => {
+        e.preventDefault();
+        document.getElementById('submitBtn').style.display = 'none';
+        document.getElementById('loadingMsg').style.display = 'block';
+
+        const data = {
+            movil: document.getElementById('movil').value,
+            ci: document.getElementById('ci').value,
+            nombre: document.getElementById('nombre').value,
+            salida: document.getElementById('salida').value,
+            destino: document.getElementById('destino').value,
+            kmLlegada: document.getElementById('kmLlegada').value,
+            kmRecorrido: document.getElementById('kmRecorrido').value,
+            motivo: document.getElementById('motivo').value,
+            litros: document.getElementById('litros').value,
+            factura: document.getElementById('factura').value,
+            importe: document.getElementById('importe').value
+        };
+
+        fetch(scriptURL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        })
+        .then(() => {
+            alert('¡Registro guardado exitosamente en Google Drive!');
+            form.reset();
+            document.getElementById('submitBtn').style.display = 'block';
+            document.getElementById('loadingMsg').style.display = 'none';
+        })
+        .catch(error => {
+            alert('Error al guardar: ' + error.message);
+            document.getElementById('submitBtn').style.display = 'block';
+            document.getElementById('loadingMsg').style.display = 'none';
+        });
+    });
+</script>
+
+</body>
+</html>
